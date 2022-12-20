@@ -1,4 +1,5 @@
-C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\User.java
-C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\UserRepository.java
-C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\AuthorizationService.java
-C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\Controller.java
+C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\user\Core.java
+C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\user\UserRepository.java
+C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\user\AuthorizationService.java
+C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\user\Controller.java
+C:\Users\Dan\IdeaProjects\FirstWorkWithDB\src\main\java\user\User.java

@@ -1,8 +1,10 @@
+package user;
+
 public class User {
 
     public String name;
-    private String email;
-    private String password;
+    public String email;
+    public String password;
 
     public User(String name, String email, String password) {
         this.name = name;

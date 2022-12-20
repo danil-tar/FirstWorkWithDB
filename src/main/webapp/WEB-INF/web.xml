@@ -6,10 +6,16 @@
     <display-name>Archetype Created Web Application</display-name>
     <servlet>
         <servlet-name>Controller</servlet-name>
-        <servlet-class>Controller</servlet-class>
+        <servlet-class>user.Controller</servlet-class>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>Controller</servlet-name>
-        <url-pattern>/simple</url-pattern>
+        <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/deleteUser</url-pattern>
     </servlet-mapping>
 </web-app>

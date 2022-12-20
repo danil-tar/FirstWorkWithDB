@@ -1,4 +1,5 @@
-AuthorizationService.class
-UserRepository.class
-Controller.class
-User.class
+user\Core.class
+user\UserRepository.class
+user\Controller.class
+user\User.class
+user\AuthorizationService.class
