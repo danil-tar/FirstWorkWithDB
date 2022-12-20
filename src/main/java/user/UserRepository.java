@@ -17,10 +17,11 @@ public class UserRepository {
     public Connection getConnectionToDB() {
 
         try {
+            Class.forName("org.postgresql.Driver");
             connection = DriverManager
                     .getConnection(DB_URL, USER, PASS);
 
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Connection Failed");
             e.printStackTrace();
         }
