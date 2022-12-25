@@ -2,8 +2,6 @@ package user;
 
 import java.sql.*;
 
-//STEP 1. Import required packages
-
 public class UserRepository {
 
     //  Database credentials
@@ -13,8 +11,11 @@ public class UserRepository {
 
     private Connection connection;
 
+    public Connection getConnection() {
+        return connection;
+    }
 
-    public Connection getConnectionToDB() {
+    public void getConnectionToDB() {
 
         try {
             connection = DriverManager
@@ -29,47 +30,54 @@ public class UserRepository {
         } else {
             System.out.println("Failed to make connection to database");
         }
-        return connection;
     }
 
 
-    public void getUser(String name) throws SQLException {
+    public User getUser(String email) throws SQLException {
 
+        getConnectionToDB();
 
         Statement statement = connection.createStatement();
 
-        String queryGet = String.format("SELECT * FROM public.users WHERE name='%s'", name);
+        String queryGet = String.format("SELECT * FROM public.users WHERE email='%s'", email);
 
 //        tom'; DELETE FROM users WHERE ''='
 
         ResultSet resultSet = statement.executeQuery(queryGet);
         System.out.println(resultSet);
 
+        User user = null;
         while (resultSet.next()) {
 
             int id = resultSet.getInt(1);
-             String email= resultSet.getString(3);
-//            System.out.printf("%d. %s - %s \n", id, name, email);
-            System.out.printf("%d. %s  %s\n", id, name, email );
+            String name = resultSet.getString(2);
+            email = resultSet.getString(3);
+            String password = resultSet.getString(4);
+            user = new User(id, name, email, password);
+            //System.out.printf("%d. %s - %s \n", id, name, email);
+            System.out.printf("%d. %s  %s %s\n", id, name, email, password);
         }
+        return user;
     }
 
-    public void createNewUser(User user) throws SQLException {
+
+    public User createNewUser(User user) throws SQLException {
+        getConnectionToDB();
 
         Statement statement = connection.createStatement();
 
         String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s');",
-                user.name, user.email, user.password);
-
+                user.getName(), user.getEmail(), user.getPassword());
         statement.execute(queryPOST);
 
+        return getUser(user.getEmail());
     }
 
-    private void executorPUT(String name) {
-
-    }
-
-    private void executorDELETE(String name) {
+    public void deleteUser(User user) throws SQLException {
+        getConnectionToDB();
+        Statement statement = connection.createStatement();
+        String queryDELETE = String.format("DELETE FROM users WHERE id = '%d';", user.getId());
+        statement.execute(queryDELETE);
 
     }
 

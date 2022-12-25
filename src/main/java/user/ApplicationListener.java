@@ -16,4 +16,9 @@ public class ApplicationListener implements ServletContextListener {
             throw new RuntimeException("Error load application. Cause: JDBC driver not found " + jdbcDriver);
         }
     }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
+    }
 }

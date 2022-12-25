@@ -30,6 +30,7 @@ public class Controller extends HttpServlet {
 
         String info = req.getServletPath();
 
+        Integer id = null;
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
@@ -39,14 +40,15 @@ public class Controller extends HttpServlet {
         if (info == "/registration") {
             try {
                 writer.println(info);
+                writer.println("id - " + id);
                 writer.println("Name - " + name);
                 writer.println("email - " + email);
                 writer.println("password - " + password);
 
-                User userNew = new User(name, email, password);
+                User userNew = new User(null, name, email, password);
 
                 UserRepository userRepository = new UserRepository();
-                Connection connectionToDB = userRepository.getConnectionToDB();
+                userRepository.getConnectionToDB();
                 writer.println("????????????");
                 userRepository.createNewUser(userNew);
                 writer.println("????????????");

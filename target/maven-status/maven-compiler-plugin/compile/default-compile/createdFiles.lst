@@ -1,5 +1,5 @@
-user\Core.class
 user\UserRepository.class
+user\ApplicationListener.class
 user\Controller.class
 user\User.class
 user\AuthorizationService.class
