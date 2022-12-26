@@ -15,8 +15,10 @@ import static org.junit.Assert.*;
 
 public class TestCRUDinDB {
 
-    @BeforeClass
-    public static void createRowsToDataBaseForTest() throws SQLException {
+
+//    @BeforeClass
+    @Test
+    public  void createRowsToDataBaseForTest() throws SQLException {
 
         UserRepository userRepository = new UserRepository();
         userRepository.getConnectionToDB();
@@ -37,7 +39,6 @@ public class TestCRUDinDB {
         userRepository.createNewUser(user5);
 
     }
-
 
     @Test
     public void testJdbcConnection() throws SQLException {
@@ -78,16 +79,16 @@ public class TestCRUDinDB {
     }
 
 
-    @AfterClass
-    public  static void clearAllRowsInDataBaseAfterTest() throws SQLException {
-
-        UserRepository userRepository = new UserRepository();
-        userRepository.getConnectionToDB();
-        Statement statement = userRepository.getConnection().createStatement();
-
-        statement.execute("DELETE FROM users");
-
-    }
+//    @AfterClass
+//    public static void clearAllRowsInDataBaseAfterTest() throws SQLException {
+//
+//        UserRepository userRepository = new UserRepository();
+//        userRepository.getConnectionToDB();
+//        Statement statement = userRepository.getConnection().createStatement();
+//
+//        statement.execute("DELETE FROM users");
+//
+//    }
 }
 
 

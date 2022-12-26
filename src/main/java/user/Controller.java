@@ -13,15 +13,29 @@ public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String test = req.getParameter("test");
+        String test = req.getParameter("email");
 
-        PrintWriter writer = resp.getWriter();
+        UserRepository userRepository = new UserRepository();
+        String userName = null;
         try {
-            writer.println("Hello World " + test);
-        } catch (RuntimeException e) {
-            System.out.println("Something went wrong.");
-        } finally {
-            writer.close();
+            User user = userRepository.getUser(test);
+            userName = user.getName();
+        } catch (NullPointerException e) {
+            PrintWriter respWriter = resp.getWriter();
+            respWriter.println("User is not fund!!!");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (userName != null) {
+            PrintWriter writer = resp.getWriter();
+            try {
+                writer.println("Hello, " + userName);
+            } catch (RuntimeException e) {
+                System.out.println("Something went wrong.");
+            } finally {
+                writer.close();
+            }
         }
     }
 
