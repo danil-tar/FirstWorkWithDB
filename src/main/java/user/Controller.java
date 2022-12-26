@@ -13,20 +13,17 @@ public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String test = req.getParameter("email");
-
+        String email = req.getParameter("email");
         UserRepository userRepository = new UserRepository();
+
         String userName = null;
         try {
-            User user = userRepository.getUser(test);
+            User user = userRepository.getUser(email);
             userName = user.getName();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | SQLException e) {
             PrintWriter respWriter = resp.getWriter();
             respWriter.println("User is not fund!!!");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-
         if (userName != null) {
             PrintWriter writer = resp.getWriter();
             try {
@@ -69,7 +66,6 @@ public class Controller extends HttpServlet {
 
                 writer.close();
 
-
             } catch (RuntimeException e) {
                 System.out.println("Something went wrong.");
                 e.printStackTrace();
@@ -78,35 +74,35 @@ public class Controller extends HttpServlet {
             } finally {
                 writer.close();
             }
-
-
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String name = req.getParameter("name");
         String email = req.getParameter("email");
-        String password = req.getParameter("password");
 
-        PrintWriter writer = resp.getWriter();
+        UserRepository userRepository = new UserRepository();
+        userRepository.getConnection();
+        User user = null;
         try {
-            writer.println("Name - " + name);
-            writer.println("email - " + email);
-            writer.println("password - " + password);
-        } catch (RuntimeException e) {
-            System.out.println("Something went wrong.");
-        } finally {
-            writer.close();
+            user = userRepository.getUser(email);
+            userRepository.deleteUser(user);
+        } catch (NullPointerException | SQLException e) {
+            PrintWriter writer = resp.getWriter();
+            writer.println("User didn't delete (or no user)");
         }
 
+        if (user != null) {
+            PrintWriter writer = resp.getWriter();
+            try {
+                writer.println("User with email - " + email + " was deleted");
+            } catch (RuntimeException e) {
+                System.out.println("Something went wrong.");
+            } finally {
+                writer.close();
+            }
+        }
     }
 
-
-    private User findUserInDB(String name, String email) {
-        User user = null;
-
-        return user;
-    }
 }
