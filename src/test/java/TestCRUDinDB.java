@@ -16,9 +16,9 @@ import static org.junit.Assert.*;
 public class TestCRUDinDB {
 
 
-//    @BeforeClass
-    @Test
-    public  void createRowsToDataBaseForTest() throws SQLException {
+    @BeforeClass
+//    @Test
+    public static void createRowsToDataBaseForTest() throws SQLException {
 
         UserRepository userRepository = new UserRepository();
         userRepository.getConnectionToDB();
