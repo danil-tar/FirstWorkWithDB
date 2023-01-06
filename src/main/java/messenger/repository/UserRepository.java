@@ -1,4 +1,6 @@
-package user;
+package messenger.repository;
+
+import messenger.dto.User;
 
 import java.sql.*;
 
@@ -15,7 +17,7 @@ public class UserRepository {
         return connection;
     }
 
-    public void getConnectionToDB() {
+    public void connectionToDB() {
 
         try {
             connection = DriverManager
@@ -35,50 +37,51 @@ public class UserRepository {
 
     public User getUser(String email) throws SQLException {
 
-        getConnectionToDB();
-
+        connectionToDB();
         Statement statement = connection.createStatement();
 
         String queryGet = String.format("SELECT * FROM public.users WHERE email='%s'", email);
-
-//        tom'; DELETE FROM users WHERE ''='
-
         ResultSet resultSet = statement.executeQuery(queryGet);
-        System.out.println(resultSet);
 
         User user = null;
         while (resultSet.next()) {
-
             int id = resultSet.getInt(1);
             String name = resultSet.getString(2);
             email = resultSet.getString(3);
             String password = resultSet.getString(4);
             user = new User(id, name, email, password);
-            //System.out.printf("%d. %s - %s \n", id, name, email);
             System.out.printf("%d. %s  %s %s\n", id, name, email, password);
         }
+
         return user;
     }
 
 
     public User createNewUser(User user) throws SQLException {
-        getConnectionToDB();
 
+        connectionToDB();
         Statement statement = connection.createStatement();
 
         String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s');",
-                user.getName(), user.getEmail(), user.getPassword());
+                user.getName(),
+                user.getEmail(),
+                user.getPassword());
         statement.execute(queryPOST);
+
+        connection.close();
 
         return getUser(user.getEmail());
     }
 
     public void deleteUser(User user) throws SQLException {
-        getConnectionToDB();
+
+        connectionToDB();
         Statement statement = connection.createStatement();
+
         String queryDELETE = String.format("DELETE FROM users WHERE id = '%d';", user.getId());
         statement.execute(queryDELETE);
 
+        connection.close();
     }
 
 

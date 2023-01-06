@@ -1,13 +1,3 @@
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import user.AuthorizationService;
-import user.User;
-import user.UserRepository;
-
-import java.sql.SQLException;
-import java.sql.Statement;
-
 public class TestAuthorizationInService {
 
 //    @BeforeClass

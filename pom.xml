@@ -10,7 +10,7 @@
     <packaging>war</packaging>
 
     <build>
-        <finalName>first</finalName>
+        <finalName>messenger</finalName>
     </build>
 
     <properties>

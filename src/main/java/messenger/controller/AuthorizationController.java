@@ -1,4 +1,7 @@
-package user;
+package messenger.controller;
+
+import messenger.dto.User;
+import messenger.repository.UserRepository;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -7,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AuthorizationService extends HttpServlet {
+public class AuthorizationController extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
@@ -38,7 +41,7 @@ public class AuthorizationService extends HttpServlet {
                 }
             }
 
-            if (userName != null & userPassword.equals(password)) {
+            if (userName != null && userPassword.equals(password)) {
                 PrintWriter writer = null;
                 try {
                     writer = response.getWriter();
@@ -54,7 +57,8 @@ public class AuthorizationService extends HttpServlet {
                     PrintWriter responseWriter = response.getWriter();
                     responseWriter.println("Wrong login or password");
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Problem to response");
+                    e.printStackTrace();
                 }
             }
         }

@@ -1,4 +1,4 @@
-package user;
+package messenger.dto;
 
 public class User {
     private Integer id;

@@ -1,32 +1,48 @@
 <web-app>
     <display-name>Archetype Created Web Application</display-name>
+
     <servlet>
         <servlet-name>Controller</servlet-name>
-        <servlet-class>user.Controller</servlet-class>
+        <servlet-class>messenger.controller.UserController</servlet-class>
     </servlet>
 
     <servlet>
-        <servlet-name>AuthorizationService</servlet-name>
-        <servlet-class>user.AuthorizationService</servlet-class>
+        <servlet-name>RegistrationController</servlet-name>
+        <servlet-class>messenger.controller.RegistrationUserController</servlet-class>
     </servlet>
 
-    <servlet-mapping>
-        <servlet-name>Controller</servlet-name>
-        <url-pattern>/registration</url-pattern>
-    </servlet-mapping>
+    <servlet>
+        <servlet-name>DeleteUserController</servlet-name>
+        <servlet-class>messenger.controller.DeleteUserController</servlet-class>
+    </servlet>
 
-    <servlet-mapping>
+    <servlet>
+        <servlet-name>AuthorizationController</servlet-name>
+        <servlet-class>messenger.controller.AuthorizationController</servlet-class>
+    </servlet>
+
+     <servlet-mapping>
         <servlet-name>Controller</servlet-name>
         <url-pattern>/deleteUser</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>AuthorizationService</servlet-name>
+        <servlet-name>AuthorizationController</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>RegistrationController</servlet-name>
+        <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DeleteUserController</servlet-name>
+        <url-pattern>/deleteUser</url-pattern>
+    </servlet-mapping>
+
     <listener>
-        <listener-class>user.ApplicationListener</listener-class>
+        <listener-class>messenger.servlet.listener.ApplicationListener</listener-class>
     </listener>
     <context-param>
         <param-name>jdbcDriver</param-name>
