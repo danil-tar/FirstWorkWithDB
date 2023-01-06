@@ -1,5 +1,6 @@
 package messenger.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import messenger.service.CreateUserService;
 
 import javax.servlet.ServletException;
@@ -23,7 +24,11 @@ public class RegistrationUserController extends HttpServlet {
         try {
             CreateUserService newUserRegistration = new CreateUserService();
             String resultRegistration = newUserRegistration.registrationNewUser(name, email, password);
-            writer.println(resultRegistration + "witch " + email);
+
+            RegistrationResponse registrationResponse = new RegistrationResponse(resultRegistration);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonResponse = objectMapper.writeValueAsString(registrationResponse);
+            writer.println(jsonResponse);
 
             writer.close();
 
@@ -36,4 +41,19 @@ public class RegistrationUserController extends HttpServlet {
 
     }
 
+    static class RegistrationResponse{
+        private String result;
+
+        public RegistrationResponse(String result) {
+            this.result = result;
+        }
+
+        public String getResult() {
+            return result;
+        }
+
+        public void setResult(String result) {
+            this.result = result;
+        }
+    }
 }
