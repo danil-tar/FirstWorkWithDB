@@ -40,7 +40,7 @@ public class UserRepository {
         connectionToDB();
         Statement statement = connection.createStatement();
 
-        String queryGet = String.format("SELECT * FROM public.users WHERE email='%s'", email);
+        String queryGet = String.format("SELECT * FROM users WHERE email='%s'", email);
         ResultSet resultSet = statement.executeQuery(queryGet);
 
         User user = null;

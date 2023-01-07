@@ -13,14 +13,14 @@ public class CreateUserService {
 
         UserRepository userRepository = new UserRepository();
         try {
-            userRepository.getUser(newUserEmail);
-        } catch (SQLException e) {
-            try {
+            if (userRepository.getUser(newUserEmail) == null) {
                 userRepository.createNewUser(new User(null, newUserName, newUserEmail, newUserPassword));
                 return "User registered success";
-            } catch (SQLException ex) {
+            }
+        } catch (SQLException e) {
+            {
                 System.out.println("Registration failed");
-                ex.getStackTrace();
+                e.getStackTrace();
             }
         }
 

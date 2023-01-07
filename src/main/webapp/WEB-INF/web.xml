@@ -2,11 +2,6 @@
     <display-name>Archetype Created Web Application</display-name>
 
     <servlet>
-        <servlet-name>Controller</servlet-name>
-        <servlet-class>messenger.controller.UserController</servlet-class>
-    </servlet>
-
-    <servlet>
         <servlet-name>RegistrationController</servlet-name>
         <servlet-class>messenger.controller.RegistrationUserController</servlet-class>
     </servlet>
