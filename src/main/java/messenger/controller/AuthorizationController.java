@@ -1,5 +1,6 @@
 package messenger.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import messenger.dto.User;
 import messenger.repository.UserRepository;
 import messenger.service.AuthorizationService;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 public class AuthorizationController extends HttpServlet {
     @Override
@@ -20,16 +22,35 @@ public class AuthorizationController extends HttpServlet {
         String passwordRequest = request.getParameter("password");
 
         AuthorizationService authorizationService = new AuthorizationService();
-        String resultAuthorization = authorizationService.authorizationUser(nameRequest, emailRequest, passwordRequest);
+        AuthorizationResponse resultAuthorization = authorizationService.authorizationUser(nameRequest, emailRequest, passwordRequest);
+        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             PrintWriter responseWriter = response.getWriter();
-            responseWriter.println(resultAuthorization);
+            responseWriter.println(objectMapper.writeValueAsString(resultAuthorization));
         } catch (IOException e) {
             System.out.println("Problem witch response");
             e.printStackTrace();
         }
 
 
+    }
+
+    public static class AuthorizationResponse {
+        private String result;
+        private String token;
+
+        public AuthorizationResponse(String result, String token) {
+            this.result = result;
+            this.token = token;
+        }
+
+        public String getResult() {
+            return result;
+        }
+
+        public void setResult(String result) {
+            this.result = result;
+        }
     }
 }

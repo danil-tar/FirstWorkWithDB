@@ -1,5 +1,6 @@
 package messenger.service;
 
+import messenger.controller.AuthorizationController;
 import messenger.dto.User;
 import messenger.repository.UserRepository;
 
@@ -7,21 +8,27 @@ import java.sql.SQLException;
 
 public class AuthorizationService {
 
-    public String authorizationUser(String nameRequest, String emailRequest, String passwordRequest) {
+    public AuthorizationController.AuthorizationResponse authorizationUser(String requestedName,
+                                                                           String requestedEmail,
+                                                                           String requestedPassword) {
 
         String message;
-        String nameRepositoryUser;
-        String passwordRepositoryUser;
+        String nameInRepositoryUser;
+        String passwordInRepositoryUser;
+        String token = null;
 
         UserRepository userRepository = new UserRepository();
-        try {
-            User repositoryUser = userRepository.getUser(emailRequest);
-            nameRepositoryUser = repositoryUser.getName();
-            passwordRepositoryUser = repositoryUser.getPassword();
+        JWTService jwtService = new JWTService();
 
-            if (nameRepositoryUser.equals(nameRequest)
-                    && passwordRepositoryUser.equals(passwordRequest)) {
-                message = "Hello, " + nameRequest + " you have successfully logged in!";
+        try {
+            User repositoryUser = userRepository.getUser(requestedEmail);
+            nameInRepositoryUser = repositoryUser.getName();
+            passwordInRepositoryUser = repositoryUser.getPassword();
+
+            if (nameInRepositoryUser.equals(requestedName)
+                    && passwordInRepositoryUser.equals(requestedPassword)) {
+                message = "Hello, " + requestedName + " you have successfully logged in!";
+                token = jwtService.generateJWToken(nameInRepositoryUser, requestedEmail);
             } else {
                 message = "Wrong name or password";
             }
@@ -30,6 +37,7 @@ public class AuthorizationService {
             message = "User is not fund!!!";
             e.getStackTrace();
         }
-        return message;
+        return new AuthorizationController.AuthorizationResponse(message, token);
     }
+
 }

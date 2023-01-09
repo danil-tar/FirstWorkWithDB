@@ -6,15 +6,13 @@ import messenger.repository.UserRepository;
 import java.sql.SQLException;
 
 public class CreateUserService {
-    public CreateUserService() {
-    }
 
-    public String registrationNewUser(String newUserName, String newUserEmail, String newUserPassword) {
+    public String registrationNewUser(User user) {
 
         UserRepository userRepository = new UserRepository();
         try {
-            if (userRepository.getUser(newUserEmail) == null) {
-                userRepository.createNewUser(new User(null, newUserName, newUserEmail, newUserPassword));
+            if (userRepository.getUser(user.getEmail()) == null) {
+                userRepository.createNewUser(user);
                 return "User registered success";
             }
         } catch (SQLException e) {

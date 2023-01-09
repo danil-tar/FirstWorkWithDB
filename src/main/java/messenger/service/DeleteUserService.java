@@ -8,10 +8,7 @@ import java.sql.SQLException;
 
 public class DeleteUserService {
 
-    public DeleteUserService() {
-    }
-
-    public String deleteUser(String email, String password) {
+     public String deleteUser(String email, String password) {
 
         UserRepository userRepository = new UserRepository();
 
@@ -19,7 +16,7 @@ public class DeleteUserService {
         try {
             user = userRepository.getUser(email);
         } catch (SQLException e) {
-            e.getStackTrace();
+            e.printStackTrace();
             return "User witch email" + email + " not fund";
         }
 
@@ -27,7 +24,7 @@ public class DeleteUserService {
             try {
                 userRepository.deleteUser(user);
             } catch (SQLException e) {
-                e.getStackTrace();
+                e.printStackTrace();
                 return "Deleting User witch email" + email + "is failed";
             }
         }
