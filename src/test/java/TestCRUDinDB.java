@@ -6,6 +6,7 @@ import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -49,13 +50,16 @@ public class TestCRUDinDB {
     public void testDeleteUserFromDataBase() throws SQLException {
         UserRepository userRepository = new UserRepository();
 
-        userRepository.createNewUser(new User(null, "Faruh", "faruh@gmail.com", "faruh1234"));
-        User user = userRepository.getUser("faruh@gmail.com");
+        User user = userRepository.createNewUser(new User(null,
+                "Faruh",
+                "faruh@gmail.com",
+                "faruh1234"));
+
         userRepository.deleteUser(user);
 
-        User actualUser = userRepository.getUser(user.getEmail());
+        Optional<User> actualUser = userRepository.getUser(user.getEmail());
 
-        Assert.assertEquals(null, actualUser);
+        Assert.assertTrue(actualUser.isEmpty());
     }
 
 
@@ -65,8 +69,7 @@ public class TestCRUDinDB {
         UserRepository userRepository = new UserRepository();
 
         User user = new User(null, "testName", "333@mail.ru", "Pass8975");
-        userRepository.createNewUser(user);
-        User userActual = userRepository.getUser(user.getEmail());
+        User userActual = userRepository.createNewUser(user);
 
         assertEquals(user.getName(), userActual.getName());
         assertEquals(user.getEmail(), userActual.getEmail());

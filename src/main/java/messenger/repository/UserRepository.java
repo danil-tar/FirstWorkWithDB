@@ -3,6 +3,7 @@ package messenger.repository;
 import messenger.dto.User;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class UserRepository {
 
@@ -35,7 +36,7 @@ public class UserRepository {
     }
 
 
-    public User getUser(String email) throws SQLException {
+    public Optional<User> getUser(String email) throws SQLException {
 
         connectionToDB();
         Statement statement = connection.createStatement();
@@ -53,7 +54,7 @@ public class UserRepository {
             System.out.printf("%d. %s  %s %s\n", id, name, email, password);
         }
 
-        return user;
+        return Optional.ofNullable(user);
     }
 
 
@@ -70,7 +71,7 @@ public class UserRepository {
 
         connection.close();
 
-        return getUser(user.getEmail());
+        return getUser(user.getEmail()).get();
     }
 
     public void deleteUser(User user) throws SQLException {

@@ -12,8 +12,11 @@ import java.util.LinkedHashMap;
 public class JWTService {
 
     private long ttlMillis = 1000 * 60 * 60;
-    private byte[] apiKeySecretBytes;
-    private Key signingKey;
+    private final byte[] apiKeySecretBytes = ("123451234512345123451234512345123451" +
+            "234512345123451234512345123451234512345123451234512345123" +
+            "45123451234512345123451234512345123451234512345123451234512" +
+            "3451234512345123451234" +
+            "51234512345123451234512345123451234512345123451234512345123451234512345").getBytes();
 
     public void setTtlMillis(long ttlMillis) {
         this.ttlMillis = ttlMillis;
@@ -26,13 +29,7 @@ public class JWTService {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
 
-        apiKeySecretBytes = ("123451234512345123451234512345123451" +
-                "234512345123451234512345123451234512345123451234512345123" +
-                "45123451234512345123451234512345123451234512345123451234512" +
-                "3451234512345123451234" +
-                "51234512345123451234512345123451234512345123451234512345123451234512345").getBytes();
-
-        signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         System.out.println(signingKey);
 

@@ -5,6 +5,7 @@ import messenger.dto.User;
 import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 public class AuthorizationService {
 
@@ -21,7 +22,7 @@ public class AuthorizationService {
         JWTService jwtService = new JWTService();
 
         try {
-            User repositoryUser = userRepository.getUser(requestedEmail);
+            User repositoryUser = userRepository.getUser(requestedEmail).get();
             nameInRepositoryUser = repositoryUser.getName();
             passwordInRepositoryUser = repositoryUser.getPassword();
 
@@ -33,7 +34,7 @@ public class AuthorizationService {
                 message = "Wrong name or password";
             }
 
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException | NoSuchElementException e) {
             message = "User is not fund!!!";
             e.getStackTrace();
         }

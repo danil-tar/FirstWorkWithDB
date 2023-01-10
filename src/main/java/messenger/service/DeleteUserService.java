@@ -5,29 +5,30 @@ import messenger.repository.UserRepository;
 
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class DeleteUserService {
 
-     public String deleteUser(String email, String password) {
+    public String deleteUser(String email) {
 
         UserRepository userRepository = new UserRepository();
 
-        User user;
+        Optional<User> user;
         try {
             user = userRepository.getUser(email);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "User witch email" + email + " not fund";
+            return "Problem witch access DB";
         }
-
-        if (user.getPassword().equals(password)) {
+        if (user.isPresent()) {
             try {
-                userRepository.deleteUser(user);
+                userRepository.deleteUser(user.get());
+                return "User witch email" + email + " was deleted";
             } catch (SQLException e) {
                 e.printStackTrace();
                 return "Deleting User witch email" + email + "is failed";
             }
         }
-        return "User witch email" + email + " was deleted";
+        return "User witch email" + email + " not fund";
     }
 }

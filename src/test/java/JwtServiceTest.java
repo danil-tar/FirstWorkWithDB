@@ -11,10 +11,11 @@ public class JwtServiceTest {
     public void testCreateJwtToken() throws JsonProcessingException {
         JWTService jwtService = new JWTService();
 
-        User userExpected = new User(null, "Dan", "dan@mail.ru", null);
+        User userExpected = new User(null, "testName", "333@mail.ru", null);
 
         String testToken = jwtService.generateJWToken(userExpected.getName(), userExpected.getEmail());
         User userActual = jwtService.testValidity(testToken);
+        System.out.println(testToken);
 
         Assert.assertEquals(userExpected.getName(), userActual.getName());
         Assert.assertEquals(userExpected.getEmail(), userActual.getEmail());

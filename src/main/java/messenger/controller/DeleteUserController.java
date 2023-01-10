@@ -1,6 +1,8 @@
 package messenger.controller;
 
+import messenger.dto.User;
 import messenger.service.DeleteUserService;
+import messenger.service.JWTService;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletException;
@@ -16,21 +18,28 @@ public class DeleteUserController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 
-        String emailRequest = req.getParameter("email");
-        String passwordRequest = req.getParameter("password");
+        String token = req.getHeader("Jwt");
 
-        String user = req.getHeader("user");
+        JWTService jwtService = new JWTService();
 
-        DeleteUserService deleteUserService = new DeleteUserService();
-        String resultOfDeleteUser = deleteUserService.deleteUser(emailRequest, passwordRequest);
+        User user = jwtService.testValidity(token);
 
         PrintWriter writer = null;
-        try {
-            writer = resp.getWriter();
-            writer.println(resultOfDeleteUser);
-        } catch (IOException e) {
-            System.out.println("Problem witch response");
-            e.printStackTrace();
+
+        if (user != null) {
+            DeleteUserService deleteUserService = new DeleteUserService();
+            String resultOfDeleteUser = deleteUserService.deleteUser(user.getEmail());
+            try {
+                writer = resp.getWriter();
+                writer.println(resultOfDeleteUser);
+                resp.addHeader("result of deleting", "true");
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("Problem witch response");
+                e.printStackTrace();
+            }
+        } else {
+            resp.addHeader("result of deleting", "false");
         }
     }
 }
