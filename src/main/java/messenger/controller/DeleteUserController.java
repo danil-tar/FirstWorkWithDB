@@ -24,22 +24,22 @@ public class DeleteUserController extends HttpServlet {
 
         User user = jwtService.testValidity(token);
 
-        PrintWriter writer = null;
+        try {
+            PrintWriter writer = resp.getWriter();
 
-        if (user != null) {
-            DeleteUserService deleteUserService = new DeleteUserService();
-            String resultOfDeleteUser = deleteUserService.deleteUser(user.getEmail());
-            try {
-                writer = resp.getWriter();
+            if (user != null) {
+                DeleteUserService deleteUserService = new DeleteUserService();
+                String resultOfDeleteUser = deleteUserService.deleteUser(user.getEmail());
                 writer.println(resultOfDeleteUser);
-                resp.addHeader("result of deleting", "true");
-                writer.close();
-            } catch (IOException e) {
-                System.out.println("Problem witch response");
-                e.printStackTrace();
+                writer.write("result of deleting is true");
+            } else {
+                writer.write("result of deleting is false");
             }
-        } else {
-            resp.addHeader("result of deleting", "false");
+            writer.close();
+
+        } catch (IOException e) {
+            System.out.println("Problem witch response");
+            e.printStackTrace();
         }
     }
 }

@@ -11,15 +11,13 @@ public class CreateUserService {
 
         UserRepository userRepository = new UserRepository();
         try {
-            if (userRepository.getUser(user.getEmail()) == null) {
+            if (userRepository.getUser(user.getEmail()).isEmpty()) {
                 userRepository.createNewUser(user);
                 return "User registered success";
             }
         } catch (SQLException e) {
-            {
-                System.out.println("Registration failed");
-                e.getStackTrace();
-            }
+            System.out.println("Registration failed");
+            e.getStackTrace();
         }
 
         return "User witch this email is already registered";
