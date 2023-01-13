@@ -1,14 +1,12 @@
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import user.User;
-import user.UserRepository;
+import messenger.dto.User;
+import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +19,7 @@ public class TestCRUDinDB {
     public static void createRowsToDataBaseForTest() throws SQLException {
 
         UserRepository userRepository = new UserRepository();
-        userRepository.getConnectionToDB();
+        userRepository.connectionToDB();
         Statement statement = userRepository.getConnection().createStatement();
 
         statement.execute("DELETE FROM users");
@@ -43,7 +41,7 @@ public class TestCRUDinDB {
     @Test
     public void testJdbcConnection() throws SQLException {
         UserRepository userRepository = new UserRepository();
-        userRepository.getConnectionToDB();
+        userRepository.connectionToDB();
         assertTrue(userRepository.getConnection().isValid(1));
         assertFalse(userRepository.getConnection().isClosed());
     }
@@ -51,15 +49,17 @@ public class TestCRUDinDB {
     @Test
     public void testDeleteUserFromDataBase() throws SQLException {
         UserRepository userRepository = new UserRepository();
-        userRepository.getConnectionToDB();
 
-        userRepository.createNewUser(new User(null, "Faruh", "faruh@gmail.com", "faruh1234"));
-        User user = userRepository.getUser("faruh@gmail.com");
+        User user = userRepository.createNewUser(new User(null,
+                "Faruh",
+                "faruh@gmail.com",
+                "faruh1234"));
+
         userRepository.deleteUser(user);
 
-        User actualUser = userRepository.getUser(user.getEmail());
+        Optional<User> actualUser = userRepository.getUser(user.getEmail());
 
-        Assert.assertEquals(null, actualUser);
+        Assert.assertTrue(actualUser.isEmpty());
     }
 
 
@@ -67,11 +67,9 @@ public class TestCRUDinDB {
     public void testRegistrationNewUserToDataBase() throws SQLException {
 
         UserRepository userRepository = new UserRepository();
-        userRepository.getConnectionToDB();
 
         User user = new User(null, "testName", "333@mail.ru", "Pass8975");
-        userRepository.createNewUser(user);
-        User userActual = userRepository.getUser(user.getEmail());
+        User userActual = userRepository.createNewUser(user);
 
         assertEquals(user.getName(), userActual.getName());
         assertEquals(user.getEmail(), userActual.getEmail());

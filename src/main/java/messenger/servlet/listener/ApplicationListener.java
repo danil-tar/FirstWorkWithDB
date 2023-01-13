@@ -1,4 +1,4 @@
-package user;
+package messenger.servlet.listener;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
