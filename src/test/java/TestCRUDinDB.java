@@ -18,7 +18,7 @@ public class TestCRUDinDB {
 //    @Test
     public static void createRowsToDataBaseForTest() throws SQLException {
 
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getInstance();
         userRepository.connectionToDB();
         Statement statement = userRepository.getConnection().createStatement();
 
@@ -40,7 +40,7 @@ public class TestCRUDinDB {
 
     @Test
     public void testJdbcConnection() throws SQLException {
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getInstance();
         userRepository.connectionToDB();
         assertTrue(userRepository.getConnection().isValid(1));
         assertFalse(userRepository.getConnection().isClosed());
@@ -48,7 +48,7 @@ public class TestCRUDinDB {
 
     @Test
     public void testDeleteUserFromDataBase() throws SQLException {
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getInstance();
 
         User user = userRepository.createNewUser(new User(null,
                 "Faruh",
@@ -66,7 +66,7 @@ public class TestCRUDinDB {
     @Test
     public void testRegistrationNewUserToDataBase() throws SQLException {
 
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getInstance();
 
         User user = new User(null, "testName", "333@mail.ru", "Pass8975");
         User userActual = userRepository.createNewUser(user);
@@ -80,7 +80,7 @@ public class TestCRUDinDB {
 //    @AfterClass
 //    public static void clearAllRowsInDataBaseAfterTest() throws SQLException {
 //
-//        UserRepository userRepository = new UserRepository();
+//        UserRepository userRepository = UserRepository.getInstance();
 //        userRepository.getConnectionToDB();
 //        Statement statement = userRepository.getConnection().createStatement();
 //

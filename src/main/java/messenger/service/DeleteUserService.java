@@ -3,15 +3,26 @@ package messenger.service;
 import messenger.dto.User;
 import messenger.repository.UserRepository;
 
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Optional;
 
 public class DeleteUserService {
 
+    private static DeleteUserService instance = null;
+
+    private DeleteUserService() {
+    }
+
+    public static synchronized DeleteUserService getInstance() {
+        if (instance == null) {
+            instance = new DeleteUserService();
+        }
+        return instance;
+    }
+
     public String deleteUser(String email) {
 
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getInstance();
 
         Optional<User> user;
         try {

@@ -11,6 +11,18 @@ import java.util.LinkedHashMap;
 
 public class JWTService {
 
+    private static JWTService instance = null;
+
+    private JWTService() {
+    }
+
+    public static synchronized JWTService getInstance() {
+        if (instance == null) {
+            instance = new JWTService();
+        }
+        return instance;
+    }
+
     private long ttlMillis = 1000 * 60 * 60;
     private final byte[] apiKeySecretBytes = ("123451234512345123451234512345123451" +
             "234512345123451234512345123451234512345123451234512345123" +

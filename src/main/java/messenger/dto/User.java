@@ -6,6 +6,8 @@ public class User {
     private String email;
     private String password;
 
+    private Integer partnerId;
+
     public User() {
     }
 
@@ -32,16 +34,20 @@ public class User {
         return password;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(Integer id_Partner) {
+        this.partnerId = id_Partner;
     }
 
     public void setPassword(String password) {

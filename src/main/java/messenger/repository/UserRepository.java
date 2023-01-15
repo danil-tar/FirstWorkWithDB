@@ -1,11 +1,25 @@
 package messenger.repository;
 
 import messenger.dto.User;
+import messenger.service.ReferralService;
 
 import java.sql.*;
+import java.util.HashSet;
 import java.util.Optional;
 
 public class UserRepository {
+
+    private static UserRepository instance = null;
+
+    private UserRepository() {
+    }
+
+    public static synchronized UserRepository getInstance() {
+        if (instance == null) {
+            instance = new UserRepository();
+        }
+        return instance;
+    }
 
     //  Database credentials
     static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/TestRegistration";
@@ -63,11 +77,13 @@ public class UserRepository {
         connectionToDB();
         Statement statement = connection.createStatement();
 
-        String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s');",
+        String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s', %d);",
                 user.getName(),
                 user.getEmail(),
                 user.getPassword());
         statement.execute(queryPOST);
+
+        user.setPartnerId(ReferralService.getInstance().generatePartnerId(user.getEmail()));
 
         connection.close();
 
@@ -85,6 +101,38 @@ public class UserRepository {
         connection.close();
     }
 
+    public void setReferralId(Integer partnerId, Integer referralId) throws SQLException {
 
+        connectionToDB();
+        Statement statement = connection.createStatement();
+
+        String querySetReferralId = String.format("ADD TO referrals (id_Partner, id_Referral ) VALUES ('%d', '%d');", partnerId, referralId);
+        statement.execute(querySetReferralId);
+
+        connection.close();
+
+    }
+
+    public HashSet<Integer> getReferralSet(Integer partnerId) {
+        HashSet<Integer> referralIdSet = new HashSet<>();
+        connectionToDB();
+        try {
+            Statement statement = connection.createStatement();
+            String queryReferralSet = String.format("SELECT * FROM referrals WHERE refferer_id='%s'", partnerId);
+            ResultSet resultSet = statement.executeQuery(queryReferralSet);
+            while (resultSet.next()) {
+                int referralId = resultSet.getInt(2);
+                referralIdSet.add(referralId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return referralIdSet;
+    }
 }
+
+
+
+
+
 

@@ -10,7 +10,7 @@ public class TestDeleteController {
     public void testDeleteController() throws SQLException {
 
         User user = new User(null, "danko", "danko345@mail.ru", "jfh46487");
-        User newUser = new UserRepository().createNewUser(user);
+        User newUser = UserRepository.getInstance().createNewUser(user);
 
 
 

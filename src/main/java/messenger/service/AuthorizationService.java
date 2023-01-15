@@ -9,6 +9,18 @@ import java.util.NoSuchElementException;
 
 public class AuthorizationService {
 
+    private static AuthorizationService instance = null;
+
+    private AuthorizationService() {
+    }
+
+    public static synchronized AuthorizationService getInstance() {
+        if (instance == null) {
+            instance = new AuthorizationService();
+        }
+        return instance;
+    }
+
     public AuthorizationController.AuthorizationResponse authorizationUser(String requestedName,
                                                                            String requestedEmail,
                                                                            String requestedPassword) {
@@ -18,8 +30,8 @@ public class AuthorizationService {
         String passwordInRepositoryUser;
         String token = null;
 
-        UserRepository userRepository = new UserRepository();
-        JWTService jwtService = new JWTService();
+        UserRepository userRepository = UserRepository.getInstance();
+        JWTService jwtService = JWTService.getInstance();
 
         try {
             User repositoryUser = userRepository.getUser(requestedEmail).get();

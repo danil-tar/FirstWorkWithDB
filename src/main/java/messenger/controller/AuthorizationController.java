@@ -20,8 +20,7 @@ public class AuthorizationController extends HttpServlet {
         String nameRequest = request.getParameter("name");
         String emailRequest = request.getParameter("email");
         String passwordRequest = request.getParameter("password");
-
-        AuthorizationService authorizationService = new AuthorizationService();
+        AuthorizationService authorizationService = AuthorizationService.getInstance();
         AuthorizationResponse resultAuthorization = authorizationService.authorizationUser(nameRequest, emailRequest, passwordRequest);
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -32,8 +31,6 @@ public class AuthorizationController extends HttpServlet {
             System.out.println("Problem witch response");
             e.printStackTrace();
         }
-
-
     }
 
     public static class AuthorizationResponse {

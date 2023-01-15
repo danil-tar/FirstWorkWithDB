@@ -7,9 +7,21 @@ import java.sql.SQLException;
 
 public class CreateUserService {
 
+    private static CreateUserService instance = null;
+
+    private CreateUserService() {
+    }
+
+    public static synchronized CreateUserService getInstance() {
+        if (instance == null) {
+            instance = new CreateUserService();
+        }
+        return instance;
+    }
+
     public String registrationNewUser(User user) {
 
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = UserRepository.getInstance();
         try {
             if (userRepository.getUser(user.getEmail()).isEmpty()) {
                 userRepository.createNewUser(user);

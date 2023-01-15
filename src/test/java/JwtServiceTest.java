@@ -9,7 +9,7 @@ import org.junit.Test;
 public class JwtServiceTest {
     @Test
     public void testCreateJwtToken() throws JsonProcessingException {
-        JWTService jwtService = new JWTService();
+        JWTService jwtService = JWTService.getInstance();
 
         User userExpected = new User(null, "testName", "333@mail.ru", null);
 

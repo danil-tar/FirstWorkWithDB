@@ -27,7 +27,7 @@ public class RegistrationUserController extends HttpServlet {
         PrintWriter writer = resp.getWriter();
 
         try {
-            CreateUserService createUserService = new CreateUserService();
+            CreateUserService createUserService = CreateUserService.getInstance();
             String resultRegistration = createUserService.registrationNewUser(user);
 
             RegistrationResponse registrationResponse = new RegistrationResponse(resultRegistration);

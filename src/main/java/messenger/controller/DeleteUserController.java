@@ -20,7 +20,7 @@ public class DeleteUserController extends HttpServlet {
 
         String token = req.getHeader("Jwt");
 
-        JWTService jwtService = new JWTService();
+        JWTService jwtService = JWTService.getInstance();
 
         User user = jwtService.testValidity(token);
 
@@ -28,7 +28,7 @@ public class DeleteUserController extends HttpServlet {
             PrintWriter writer = resp.getWriter();
 
             if (user != null) {
-                DeleteUserService deleteUserService = new DeleteUserService();
+                DeleteUserService deleteUserService = DeleteUserService.getInstance();
                 String resultOfDeleteUser = deleteUserService.deleteUser(user.getEmail());
                 writer.println(resultOfDeleteUser);
                 writer.write("result of deleting is true");
