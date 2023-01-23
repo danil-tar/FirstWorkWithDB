@@ -1,6 +1,7 @@
 package messenger.service;
 
 import messenger.dto.User;
+import messenger.repository.ReferralRepository;
 import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
@@ -23,73 +24,57 @@ public class ReferralService {
 
     private final Integer addToGeneratePartnerId = 1254;
 
-
     public Integer getPartnerId(String email) {
         UserRepository userRepository = UserRepository.getInstance();
-        Integer partnerId = 0;
-        try {
-            Optional<User> user = userRepository.getUser(email);
-            if (user.isPresent()) {
-                partnerId = user.get().getPartnerId();
-                return partnerId;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Problem witch DB");
+        Optional<User> user = userRepository.getUser(email);
+        if (user.isPresent()) {
+            Integer partnerId = user.get().getPartnerId();
+            return partnerId;
         }
-        return partnerId;
+        return 0;
     }
 
+    public HashSet<String> getReferrals(String email) {
 
-    public Optional<HashSet<Integer>> getReferrals(String email) {
+        HashSet<String> referralEmails = new HashSet<>();
 
         UserRepository userRepository = UserRepository.getInstance();
-        userRepository.connectionToDB();
-        HashSet<Integer> referralSet = null;
-        try {
-            Optional<User> user = userRepository.getUser(email);
-            if (user.isPresent()) {
-                Integer partnerId = user.get().getId();
-                referralSet = userRepository.getReferralSet(partnerId);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return Optional.ofNullable(referralSet);
-    }
+        Optional<User> user = userRepository.getUser(email);
 
+        ReferralRepository referralRepository = ReferralRepository.getInstance();
+
+        if (user.isPresent()) {
+            referralEmails = referralRepository.getReferralEmails(user.get().getPartnerId());
+        }
+        return referralEmails;
+    }
 
     public Integer generatePartnerId(String email) {
 
         UserRepository userRepository = UserRepository.getInstance();
-        Integer partner_Id = null;
-        try {
-            Optional<User> user = userRepository.getUser(email);
-            if (user.isPresent() && user.get().getPartnerId() == null) {
-                partner_Id = user.get().getId() + addToGeneratePartnerId;
-                return partner_Id;
+        Integer partner_Id = 0;
+        Optional<User> user = userRepository.getUser(email);
+        if (user.isPresent() && user.get().getPartnerId() == 0) {
+            partner_Id = user.get().getId() + addToGeneratePartnerId;
+            return partner_Id;
 
-            } else {
-                if (user.isPresent()) {
-                    partner_Id = user.get().getPartnerId();
-                }
+        } else {
+            if (user.isPresent()) {
+                partner_Id = user.get().getPartnerId();
             }
-        } catch (SQLException e) {
-            System.out.println("Problem with connectivity");
-            e.printStackTrace();
         }
         return partner_Id;
     }
 
-
-    public void settingPartnerId(Integer partnerId, String emailForSettingPartnerId) {
+    public void registrationAsReferral(Integer partnerId, String emailForSettingPartnerId) {
 
         UserRepository userRepository = UserRepository.getInstance();
+        ReferralRepository referralRepository = ReferralRepository.getInstance();
         try {
-            Optional<User> user = userRepository.getUser(emailForSettingPartnerId);
-            if (user.isPresent()) {
-                Integer referralId = user.get().getId();
-                userRepository.setReferralId(partnerId, referralId);
+            Optional<User> userReferrer = referralRepository.getUserFromPartnerId(partnerId);
+            Optional<User> userReferral = userRepository.getUser(emailForSettingPartnerId);
+            if (userReferral.isPresent()) {
+                referralRepository.setReferralId(userReferrer.get().getId(), userReferral.get().getId());
             }
         } catch (SQLException e) {
             System.out.println("Problem with DB");

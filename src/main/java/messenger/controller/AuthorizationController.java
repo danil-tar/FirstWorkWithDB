@@ -22,9 +22,9 @@ public class AuthorizationController extends HttpServlet {
         String passwordRequest = request.getParameter("password");
         AuthorizationService authorizationService = AuthorizationService.getInstance();
         AuthorizationResponse resultAuthorization = authorizationService.authorizationUser(nameRequest, emailRequest, passwordRequest);
-        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             PrintWriter responseWriter = response.getWriter();
             responseWriter.println(objectMapper.writeValueAsString(resultAuthorization));
         } catch (IOException e) {

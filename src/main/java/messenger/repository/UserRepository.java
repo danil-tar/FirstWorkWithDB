@@ -50,22 +50,31 @@ public class UserRepository {
     }
 
 
-    public Optional<User> getUser(String email) throws SQLException {
+    public Optional<User> getUser(String email) {
 
         connectionToDB();
-        Statement statement = connection.createStatement();
 
-        String queryGet = String.format("SELECT * FROM users WHERE email='%s'", email);
-        ResultSet resultSet = statement.executeQuery(queryGet);
-
+        Statement statement = null;
         User user = null;
-        while (resultSet.next()) {
-            int id = resultSet.getInt(1);
-            String name = resultSet.getString(2);
-            email = resultSet.getString(3);
-            String password = resultSet.getString(4);
-            user = new User(id, name, email, password);
-            System.out.printf("%d. %s  %s %s\n", id, name, email, password);
+        try {
+            statement = connection.createStatement();
+            String queryGet = String.format("SELECT * FROM users WHERE email='%s'", email);
+            ResultSet resultSet = statement.executeQuery(queryGet);
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                email = resultSet.getString(3);
+                String password = resultSet.getString(4);
+                int partnerId = resultSet.getInt(5);
+                user = new User(id, name, email, password);
+                user.setPartnerId(partnerId);
+
+                System.out.printf("%d. %s  %s %s\n", id, name, email, password);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Problem witch DB");
         }
 
         return Optional.ofNullable(user);
@@ -77,13 +86,15 @@ public class UserRepository {
         connectionToDB();
         Statement statement = connection.createStatement();
 
-        String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s', %d);",
+        String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s');",
                 user.getName(),
                 user.getEmail(),
                 user.getPassword());
         statement.execute(queryPOST);
+        Integer partnerId = ReferralService.getInstance().generatePartnerId(user.getEmail());
 
-        user.setPartnerId(ReferralService.getInstance().generatePartnerId(user.getEmail()));
+        String querySetPartnerId = String.format("UPDATE users SET partner_id='%d' WHERE email='%s';", partnerId, user.getEmail());
+        statement.execute(querySetPartnerId);
 
         connection.close();
 
@@ -101,34 +112,6 @@ public class UserRepository {
         connection.close();
     }
 
-    public void setReferralId(Integer partnerId, Integer referralId) throws SQLException {
-
-        connectionToDB();
-        Statement statement = connection.createStatement();
-
-        String querySetReferralId = String.format("ADD TO referrals (id_Partner, id_Referral ) VALUES ('%d', '%d');", partnerId, referralId);
-        statement.execute(querySetReferralId);
-
-        connection.close();
-
-    }
-
-    public HashSet<Integer> getReferralSet(Integer partnerId) {
-        HashSet<Integer> referralIdSet = new HashSet<>();
-        connectionToDB();
-        try {
-            Statement statement = connection.createStatement();
-            String queryReferralSet = String.format("SELECT * FROM referrals WHERE refferer_id='%s'", partnerId);
-            ResultSet resultSet = statement.executeQuery(queryReferralSet);
-            while (resultSet.next()) {
-                int referralId = resultSet.getInt(2);
-                referralIdSet.add(referralId);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return referralIdSet;
-    }
 }
 
 

@@ -2,7 +2,10 @@ package messenger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import messenger.dto.User;
+import messenger.repository.ReferralRepository;
+import messenger.repository.UserRepository;
 import messenger.service.CreateUserService;
+import messenger.service.ReferralService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RegistrationUserController extends HttpServlet {
@@ -24,41 +29,35 @@ public class RegistrationUserController extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         User user = mapper.readValue(collect, User.class);
 
+        String partnerIdFromReq = req.getParameter("partnerId");
         PrintWriter writer = resp.getWriter();
 
-        try {
-            CreateUserService createUserService = CreateUserService.getInstance();
-            String resultRegistration = createUserService.registrationNewUser(user);
+        CreateUserService createUserService = CreateUserService.getInstance();
+        String resultRegistration = createUserService.registrationNewUser(user, partnerIdFromReq);
+        RegistrationResponse registrationResponse = new RegistrationResponse(resultRegistration);
 
-            RegistrationResponse registrationResponse = new RegistrationResponse(resultRegistration);
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonResponse = objectMapper.writeValueAsString(registrationResponse);
-            writer.println(jsonResponse);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(registrationResponse);
+        writer.println(jsonResponse);
 
-            writer.close();
-
-        } catch (RuntimeException e) {
-            System.out.println("Something went wrong.");
-            e.printStackTrace();
-        } finally {
-            writer.close();
-        }
+        writer.close();
 
     }
 
-    static class RegistrationResponse {
-        private String result;
 
-        public RegistrationResponse(String result) {
-            this.result = result;
-        }
+static class RegistrationResponse {
+    private String result;
 
-        public String getResult() {
-            return result;
-        }
-
-        public void setResult(String result) {
-            this.result = result;
-        }
+    public RegistrationResponse(String result) {
+        this.result = result;
     }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+}
 }

@@ -46,7 +46,7 @@ public class AuthorizationService {
                 message = "Wrong name or password";
             }
 
-        } catch (SQLException | NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             message = "User is not fund!!!";
             e.getStackTrace();
         }

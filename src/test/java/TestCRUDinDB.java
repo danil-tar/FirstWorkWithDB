@@ -1,3 +1,4 @@
+import messenger.repository.ReferralRepository;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,10 +20,13 @@ public class TestCRUDinDB {
     public static void createRowsToDataBaseForTest() throws SQLException {
 
         UserRepository userRepository = UserRepository.getInstance();
+        ReferralRepository referralRepository = ReferralRepository.getInstance();
         userRepository.connectionToDB();
         Statement statement = userRepository.getConnection().createStatement();
 
         statement.execute("DELETE FROM users");
+        statement.execute("DELETE FROM referrals");
+
 
         User user1 = new User(null, "dan", "dan@mail.ru", "123nj");
         User user2 = new User(null, "dan", "dan1253@mail.ru", "58rgg");
@@ -35,6 +39,13 @@ public class TestCRUDinDB {
         userRepository.createNewUser(user3);
         userRepository.createNewUser(user4);
         userRepository.createNewUser(user5);
+
+        Integer idReferrer = userRepository.getUser("dan@mail.ru").get().getId();
+        Integer idReferral1 = userRepository.getUser("dan1253@mail.ru").get().getId();
+        Integer idReferral2 = userRepository.getUser("andi@mail.ru").get().getId();
+
+        referralRepository.setReferralId(idReferrer, idReferral1);
+        referralRepository.setReferralId(idReferrer, idReferral2);
 
     }
 
@@ -80,7 +91,7 @@ public class TestCRUDinDB {
 //    @AfterClass
 //    public static void clearAllRowsInDataBaseAfterTest() throws SQLException {
 //
-//        UserRepository userRepository = UserRepository.getInstance();
+//        userRepository = UserRepository.getInstance();
 //        userRepository.getConnectionToDB();
 //        Statement statement = userRepository.getConnection().createStatement();
 //

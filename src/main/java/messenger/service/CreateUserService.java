@@ -1,9 +1,11 @@
 package messenger.service;
 
 import messenger.dto.User;
+import messenger.repository.ReferralRepository;
 import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class CreateUserService {
 
@@ -19,19 +21,34 @@ public class CreateUserService {
         return instance;
     }
 
-    public String registrationNewUser(User user) {
+    public String registrationNewUser(User user, String partnerId) {
 
         UserRepository userRepository = UserRepository.getInstance();
-        try {
-            if (userRepository.getUser(user.getEmail()).isEmpty()) {
-                userRepository.createNewUser(user);
-                return "User registered success";
-            }
-        } catch (SQLException e) {
-            System.out.println("Registration failed");
-            e.getStackTrace();
-        }
 
+        if (userRepository.getUser(user.getEmail()).isEmpty()) {
+
+            if (partnerId == null || partnerId.isEmpty()) {
+                partnerId = "0";
+            }
+
+            try {
+                User userReferral = userRepository.createNewUser(user);
+                ReferralRepository referralRepository = ReferralRepository.getInstance();
+
+                Optional<User> userFromPartnerId = referralRepository.getUserFromPartnerId(Integer.parseInt(partnerId));
+
+                if (userFromPartnerId.isPresent()) {
+                    referralRepository.setReferralId(userFromPartnerId.get().getId(),
+                            userRepository.getUser(userReferral.getEmail()).get().getId());
+                    return "User was created success witch partnerId = " + partnerId;
+                } else {
+                    return "User was created,but PartnerId is not valid";
+                }
+            } catch (SQLException e) {
+                System.out.println("Registration failed");
+                e.getStackTrace();
+            }
+        }
         return "User witch this email is already registered";
     }
 }

@@ -16,7 +16,7 @@ import java.security.Key;
 public class DeleteUserController extends HttpServlet {
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 
         String token = req.getHeader("Jwt");
 

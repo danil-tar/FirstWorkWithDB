@@ -46,8 +46,8 @@ public class User {
         return partnerId;
     }
 
-    public void setPartnerId(Integer id_Partner) {
-        this.partnerId = id_Partner;
+    public void setPartnerId(Integer partnerId) {
+        this.partnerId = partnerId;
     }
 
     public void setPassword(String password) {

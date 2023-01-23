@@ -25,12 +25,7 @@ public class DeleteUserService {
         UserRepository userRepository = UserRepository.getInstance();
 
         Optional<User> user;
-        try {
-            user = userRepository.getUser(email);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Problem witch access DB";
-        }
+        user = userRepository.getUser(email);
         if (user.isPresent()) {
             try {
                 userRepository.deleteUser(user.get());
