@@ -27,6 +27,7 @@ public class AuthorizationController extends HttpServlet {
             ObjectMapper objectMapper = new ObjectMapper();
             PrintWriter responseWriter = response.getWriter();
             responseWriter.println(objectMapper.writeValueAsString(resultAuthorization));
+            responseWriter.close();
         } catch (IOException e) {
             System.out.println("Problem witch response");
             e.printStackTrace();

@@ -37,13 +37,20 @@ public class CreateUserService {
 
                 Optional<User> userFromPartnerId = referralRepository.getUserFromPartnerId(Integer.parseInt(partnerId));
 
+                String message;
                 if (userFromPartnerId.isPresent()) {
                     referralRepository.setReferralId(userFromPartnerId.get().getId(),
                             userRepository.getUser(userReferral.getEmail()).get().getId());
-                    return "User was created success witch partnerId = " + partnerId;
+                    message = "User was created success witch partnerId = " + partnerId;
                 } else {
-                    return "User was created,but PartnerId is not valid";
+                    message = "User was created,but PartnerId is not valid";
                 }
+                EMailService.getInstance()
+                        .sendEMail(user.getEmail(),
+                                "Success registration",
+                                "Welcome " + user.getName());
+
+                return message;
             } catch (SQLException e) {
                 System.out.println("Registration failed");
                 e.getStackTrace();
