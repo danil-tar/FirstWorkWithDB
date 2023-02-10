@@ -1,6 +1,7 @@
 package messenger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import messenger.anotation.RegisterServlet;
 import messenger.dto.User;
 import messenger.repository.ReferralRepository;
 import messenger.repository.UserRepository;
@@ -18,6 +19,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RegisterServlet(url = "/registration")
 public class RegistrationUserController extends HttpServlet {
 
     @Override

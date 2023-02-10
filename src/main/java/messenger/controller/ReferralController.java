@@ -1,6 +1,7 @@
 package messenger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import messenger.anotation.RegisterServlet;
 import messenger.service.ReferralService;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 
+@RegisterServlet(url = "/referral")
 public class ReferralController extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

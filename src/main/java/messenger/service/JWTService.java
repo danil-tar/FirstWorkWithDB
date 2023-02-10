@@ -43,7 +43,7 @@ public class JWTService {
 
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
-        System.out.println(signingKey);
+//        System.out.println(signingKey);
 
         User user = new User();
         user.setEmail(email);

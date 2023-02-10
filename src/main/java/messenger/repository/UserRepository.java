@@ -4,7 +4,6 @@ import messenger.dto.User;
 import messenger.service.ReferralService;
 
 import java.sql.*;
-import java.util.HashSet;
 import java.util.Optional;
 
 public class UserRepository {
@@ -70,7 +69,7 @@ public class UserRepository {
                 user = new User(id, name, email, password);
                 user.setPartnerId(partnerId);
 
-                System.out.printf("%d. %s  %s %s\n", id, name, email, password);
+//                System.out.printf("%d. %s  %s %s\n", id, name, email, password);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,7 +111,23 @@ public class UserRepository {
         connection.close();
     }
 
+    public void clear() {
+        connectionToDB();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute("DELETE FROM users");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
+
 
 
 

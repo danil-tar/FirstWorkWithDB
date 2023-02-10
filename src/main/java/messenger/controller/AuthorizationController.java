@@ -1,8 +1,7 @@
 package messenger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messenger.dto.User;
-import messenger.repository.UserRepository;
+import messenger.anotation.RegisterServlet;
 import messenger.service.AuthorizationService;
 
 import javax.servlet.http.HttpServlet;
@@ -10,9 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.Enumeration;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
+@RegisterServlet(url = "/login")
 public class AuthorizationController extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -40,6 +42,14 @@ public class AuthorizationController extends HttpServlet {
 
         public AuthorizationResponse(String result, String token) {
             this.result = result;
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
             this.token = token;
         }
 

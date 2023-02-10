@@ -1,5 +1,6 @@
 package messenger.controller;
 
+import messenger.anotation.RegisterServlet;
 import messenger.dto.User;
 import messenger.service.DeleteUserService;
 import messenger.service.JWTService;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Key;
 
+@RegisterServlet(url = "/deleteUser")
 public class DeleteUserController extends HttpServlet {
 
     @Override

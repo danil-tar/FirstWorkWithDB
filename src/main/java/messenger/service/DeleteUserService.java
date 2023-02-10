@@ -37,4 +37,9 @@ public class DeleteUserService {
         }
         return "User witch email" + email + " not fund";
     }
+
+    public void clear() {
+        UserRepository userRepository = UserRepository.getInstance();
+        userRepository.clear();
+    }
 }
