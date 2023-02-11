@@ -2,7 +2,9 @@ import messenger.dto.User;
 import messenger.repository.UserRepository;
 import messenger.service.CreateUserService;
 import messenger.service.ReferralService;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -11,6 +13,15 @@ import java.util.Optional;
 
 public class ReferralServiceTest {
 
+    @BeforeClass
+    public static void before(){
+        InitDb.createTables();
+    }
+
+    @AfterClass
+    public static void clear(){
+        InitDb.clearDB();
+    }
     @Test
     public void getPartnerId() {
         CreateUserService.getInstance().

@@ -1,32 +1,34 @@
+import messenger.dto.User;
+import messenger.repository.ConnectionFactory;
 import messenger.repository.ReferralRepository;
+import messenger.repository.UserRepository;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import messenger.dto.User;
-import messenger.repository.UserRepository;
 
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
 
 public class TestCRUDinDB {
-
-
+        @AfterClass
+        public  static void deletAllTables(){
+            InitDb.clearDB();
+        }
     @BeforeClass
 //    @Test
     public static void createRowsToDataBaseForTest() throws SQLException {
-
+        InitDb.createTables();
         UserRepository userRepository = UserRepository.getInstance();
         ReferralRepository referralRepository = ReferralRepository.getInstance();
-        userRepository.connectionToDB();
-        Statement statement = userRepository.getConnection().createStatement();
 
-        statement.execute("DELETE FROM users");
-        statement.execute("DELETE FROM referrals");
 
+        userRepository.clear();
+        referralRepository.clear();
 
         User user1 = new User(null, "dan", "dan@mail.ru", "123nj");
         User user2 = new User(null, "dan", "dan1253@mail.ru", "58rgg");
@@ -51,10 +53,9 @@ public class TestCRUDinDB {
 
     @Test
     public void testJdbcConnection() throws SQLException {
-        UserRepository userRepository = UserRepository.getInstance();
-        userRepository.connectionToDB();
-        assertTrue(userRepository.getConnection().isValid(1));
-        assertFalse(userRepository.getConnection().isClosed());
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        assertTrue(connection.isValid(1));
+        assertFalse(connection.isClosed());
     }
 
     @Test

@@ -20,38 +20,9 @@ public class UserRepository {
         return instance;
     }
 
-    //  Database credentials
-    static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/TestRegistration";
-    static final String USER = "postgres";
-    static final String PASS = "danil";
-
-    private Connection connection;
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void connectionToDB() {
-
-        try {
-            connection = DriverManager
-                    .getConnection(DB_URL, USER, PASS);
-        } catch (SQLException e) {
-            System.out.println("Connection Failed");
-            e.printStackTrace();
-        }
-
-        if (connection != null) {
-            System.out.println("You successfully connected to database now");
-        } else {
-            System.out.println("Failed to make connection to database");
-        }
-    }
-
 
     public Optional<User> getUser(String email) {
-
-        connectionToDB();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
 
         Statement statement = null;
         User user = null;
@@ -81,11 +52,10 @@ public class UserRepository {
 
 
     public User createNewUser(User user) throws SQLException {
-
-        connectionToDB();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
         Statement statement = connection.createStatement();
 
-        String queryPOST = String.format("INSERT INTO users ( name, email, password) VALUES ('%s', '%s', '%s');",
+        String queryPOST = String.format("INSERT INTO users ( \"name\", email, \"password\") VALUES ('%s', '%s', '%s');",
                 user.getName(),
                 user.getEmail(),
                 user.getPassword());
@@ -101,8 +71,7 @@ public class UserRepository {
     }
 
     public void deleteUser(User user) throws SQLException {
-
-        connectionToDB();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
         Statement statement = connection.createStatement();
 
         String queryDELETE = String.format("DELETE FROM users WHERE id = '%d';", user.getId());
@@ -112,7 +81,7 @@ public class UserRepository {
     }
 
     public void clear() {
-        connectionToDB();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
         try {
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM users");

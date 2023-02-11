@@ -2,6 +2,7 @@ package messenger.repository;
 
 import messenger.dto.User;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,11 +23,8 @@ public class ReferralRepository {
     }
 
     public Optional<User> getUserFromPartnerId(Integer partnerId) throws SQLException {
-
-        UserRepository userRepository = UserRepository.getInstance();
-        userRepository.connectionToDB();
-
-        Statement statement = userRepository.getConnection().createStatement();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Statement statement = connection.createStatement();
 
         String queryGet = String.format("SELECT * FROM users WHERE partner_id ='%d'", partnerId);
         ResultSet resultSet = statement.executeQuery(queryGet);
@@ -42,15 +40,15 @@ public class ReferralRepository {
 
             System.out.printf("%d. %s  %s %s\n", id, name, email, password);
         }
+        connection.close();
         return Optional.ofNullable(user);
     }
 
     public Optional<User> getUserFromId(Integer id) throws SQLException {
 
-        UserRepository userRepository = UserRepository.getInstance();
-        userRepository.connectionToDB();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
 
-        Statement statement = userRepository.getConnection().createStatement();
+        Statement statement = connection.createStatement();
 
         String queryGet = String.format("SELECT * FROM users WHERE id ='%d'", id);
         ResultSet resultSet = statement.executeQuery(queryGet);
@@ -66,31 +64,28 @@ public class ReferralRepository {
 
             System.out.printf("%d. %s  %s %s\n", id, name, email, password);
         }
+        connection.close();
         return Optional.ofNullable(user);
     }
 
     public void setReferralId(Integer referrerId, Integer referralId) throws SQLException {
-
-        UserRepository userRepository = UserRepository.getInstance();
-        userRepository.connectionToDB();
-
-        Statement statement = userRepository.getConnection().createStatement();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Statement statement = connection.createStatement();
 
         String querySetReferralId = String.format("INSERT INTO referrals (referrer_id, referral_id ) VALUES ('%d', '%d');", referrerId, referralId);
         statement.execute(querySetReferralId);
 
-        userRepository.getConnection().close();
+        connection.close();
     }
 
     public HashSet<String> getReferralEmails(Integer partnerId) {
 
         HashSet<String> referralEmailsHashSet = new HashSet<>();
 
-        UserRepository userRepository = UserRepository.getInstance();
-        userRepository.connectionToDB();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
 
         try {
-            Statement statement = userRepository.getConnection().createStatement();
+            Statement statement = connection.createStatement();
 
             String queryReferralSelection = String.format
                     ("Select * FROM users u INNER JOiN referrals r on u.id = r.referrer_id where u.partner_id = '%d'", partnerId);
@@ -101,7 +96,7 @@ public class ReferralRepository {
                 referralEmailsHashSet.add(ReferralRepository.getInstance().getUserFromId(referralId).get().getEmail());
             }
 
-            userRepository.getConnection().close();
+            connection.close();
             return referralEmailsHashSet;
 
         } catch (SQLException e) {
@@ -112,4 +107,19 @@ public class ReferralRepository {
         return referralEmailsHashSet;
     }
 
+    public void clear() {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute("DELETE FROM referrals;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
