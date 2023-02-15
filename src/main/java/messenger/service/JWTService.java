@@ -1,26 +1,16 @@
 package messenger.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.*;
+import messenger.annotation.Singleton;
 import messenger.dto.User;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 import java.util.LinkedHashMap;
-
+@Singleton
 public class JWTService {
-
-    private static JWTService instance = null;
-
     private JWTService() {
-    }
-
-    public static synchronized JWTService getInstance() {
-        if (instance == null) {
-            instance = new JWTService();
-        }
-        return instance;
     }
 
     private long ttlMillis = 1000 * 60 * 60;

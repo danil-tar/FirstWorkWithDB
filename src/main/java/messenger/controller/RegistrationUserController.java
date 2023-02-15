@@ -1,12 +1,11 @@
 package messenger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messenger.anotation.RegisterServlet;
+import messenger.annotation.Autowired;
+import messenger.annotation.RegisterServlet;
 import messenger.dto.User;
-import messenger.repository.ReferralRepository;
-import messenger.repository.UserRepository;
+import messenger.menegment.InstanceFactory;
 import messenger.service.CreateUserService;
-import messenger.service.ReferralService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,12 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RegisterServlet(url = "/registration")
 public class RegistrationUserController extends HttpServlet {
+
+    private RegistrationUserController() {
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,7 +34,7 @@ public class RegistrationUserController extends HttpServlet {
         String partnerIdFromReq = req.getParameter("partnerId");
         PrintWriter writer = resp.getWriter();
 
-        CreateUserService createUserService = CreateUserService.getInstance();
+        CreateUserService createUserService = InstanceFactory.getInstance(CreateUserService.class);
         String resultRegistration = createUserService.registrationNewUser(user, partnerIdFromReq);
         RegistrationResponse registrationResponse = new RegistrationResponse(resultRegistration);
 

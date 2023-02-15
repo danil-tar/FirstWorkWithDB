@@ -1,7 +1,9 @@
 import messenger.dto.User;
+import messenger.menegment.InstanceFactory;
 import messenger.repository.ConnectionFactory;
 import messenger.repository.ReferralRepository;
 import messenger.repository.UserRepository;
+import messenger.service.ReferralService;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -23,8 +25,8 @@ public class TestCRUDinDB {
 //    @Test
     public static void createRowsToDataBaseForTest() throws SQLException {
         InitDb.createTables();
-        UserRepository userRepository = UserRepository.getInstance();
-        ReferralRepository referralRepository = ReferralRepository.getInstance();
+        UserRepository userRepository = InstanceFactory.getInstance(UserRepository.class);
+        ReferralRepository referralRepository = InstanceFactory.getInstance(ReferralRepository.class);
 
 
         userRepository.clear();
@@ -53,14 +55,14 @@ public class TestCRUDinDB {
 
     @Test
     public void testJdbcConnection() throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = InstanceFactory.getInstance(ConnectionFactory.class).getConnection();
         assertTrue(connection.isValid(1));
         assertFalse(connection.isClosed());
     }
 
     @Test
     public void testDeleteUserFromDataBase() throws SQLException {
-        UserRepository userRepository = UserRepository.getInstance();
+        UserRepository userRepository = InstanceFactory.getInstance(UserRepository.class);
 
         User user = userRepository.createNewUser(new User(null,
                 "Faruh",
@@ -72,13 +74,19 @@ public class TestCRUDinDB {
         Optional<User> actualUser = userRepository.getUser(user.getEmail());
 
         Assert.assertTrue(actualUser.isEmpty());
+
+
+        //FIXME
+        User instance = InstanceFactory.getInstance(User.class);
+
+
     }
 
 
     @Test
     public void testRegistrationNewUserToDataBase() throws SQLException {
 
-        UserRepository userRepository = UserRepository.getInstance();
+        UserRepository userRepository = InstanceFactory.getInstance(UserRepository.class);
 
         User user = new User(null, "testName", "333@mail.ru", "Pass8975");
         User userActual = userRepository.createNewUser(user);

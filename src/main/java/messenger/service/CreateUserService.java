@@ -1,29 +1,30 @@
 package messenger.service;
 
+import messenger.annotation.Autowired;
+import messenger.annotation.Singleton;
 import messenger.dto.User;
 import messenger.repository.ReferralRepository;
 import messenger.repository.UserRepository;
 
+import java.lang.module.ResolutionException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Singleton
 public class CreateUserService {
-
-    private static CreateUserService instance = null;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ReferralRepository referralRepository;
+    @Autowired
+    private EMailService eMailService;
+    @Autowired
+    private ReferralService referralService;
 
     private CreateUserService() {
     }
 
-    public static synchronized CreateUserService getInstance() {
-        if (instance == null) {
-            instance = new CreateUserService();
-        }
-        return instance;
-    }
-
     public String registrationNewUser(User user, String partnerId) {
-
-        UserRepository userRepository = UserRepository.getInstance();
 
         if (userRepository.getUser(user.getEmail()).isEmpty()) {
 
@@ -33,7 +34,8 @@ public class CreateUserService {
 
             try {
                 User userReferral = userRepository.createNewUser(user);
-                ReferralRepository referralRepository = ReferralRepository.getInstance();
+                Integer newUserPartnerId = referralService.generatePartnerId(userReferral.getEmail());
+                userRepository.updatePartnerId(userReferral.getEmail(),newUserPartnerId);
 
                 Optional<User> userFromPartnerId = referralRepository.getUserFromPartnerId(Integer.parseInt(partnerId));
 
@@ -45,10 +47,9 @@ public class CreateUserService {
                 } else {
                     message = "User was created,but PartnerId is not valid";
                 }
-                EMailService.getInstance()
-                        .sendEMail(user.getEmail(),
-                                "Success registration",
-                                "Welcome " + user.getName());
+                eMailService.sendEMail(user.getEmail(),
+                        "Success registration",
+                        "Welcome " + user.getName());
 
                 return message;
             } catch (SQLException e) {

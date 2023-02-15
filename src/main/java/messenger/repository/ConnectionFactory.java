@@ -1,23 +1,19 @@
 package messenger.repository;
 
+import messenger.annotation.Singleton;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Singleton
 public class ConnectionFactory {
-    private static ConnectionFactory instance = null;
-
-    public static ConnectionFactory getInstance() {
-        if (instance == null) {
-            instance = new ConnectionFactory();
-        }
-        return instance;
-    }
-
-
     private static String DB_URL = "jdbc:postgresql://127.0.0.1:5432/TestRegistration";
     private static final String USER = "postgres";
     private static final String PASS = "danil";
+
+    private ConnectionFactory() {
+    }
 
     public Connection getConnection() {
         return connectToDb();

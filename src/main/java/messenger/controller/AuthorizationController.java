@@ -1,7 +1,9 @@
 package messenger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import messenger.anotation.RegisterServlet;
+import messenger.annotation.Autowired;
+import messenger.annotation.RegisterServlet;
+import messenger.menegment.InstanceFactory;
 import messenger.service.AuthorizationService;
 
 import javax.servlet.http.HttpServlet;
@@ -9,20 +11,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 @RegisterServlet(url = "/login")
 public class AuthorizationController extends HttpServlet {
+
+    private AuthorizationController() {
+    }
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         String nameRequest = request.getParameter("name");
         String emailRequest = request.getParameter("email");
         String passwordRequest = request.getParameter("password");
-        AuthorizationService authorizationService = AuthorizationService.getInstance();
+        AuthorizationService authorizationService =InstanceFactory.getInstance(AuthorizationService.class);
         AuthorizationResponse resultAuthorization = authorizationService.authorizationUser(nameRequest, emailRequest, passwordRequest);
 
         try {

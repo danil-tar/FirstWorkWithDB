@@ -1,4 +1,5 @@
 import messenger.dto.User;
+import messenger.menegment.InstanceFactory;
 import messenger.repository.UserRepository;
 import messenger.service.CreateUserService;
 import messenger.service.ReferralService;
@@ -24,16 +25,16 @@ public class ReferralServiceTest {
     }
     @Test
     public void getPartnerId() {
-        CreateUserService.getInstance().
+       InstanceFactory.getInstance(CreateUserService.class).
                 registrationNewUser(new User(null, "Referrer", "refTest@mail.ru", "ghgy465"), null);
         Integer expectedPartnerId = 0;
         Optional<User> user = null;
-        user = UserRepository.getInstance().getUser("refTest@mail.ru");
+        user = InstanceFactory.getInstance(UserRepository.class).getUser("refTest@mail.ru");
 
         if (user.isPresent()) {
             expectedPartnerId = user.get().getPartnerId();
         }
-        Integer actualPartnerId = ReferralService.getInstance().getPartnerId("refTest@mail.ru");
+        Integer actualPartnerId = InstanceFactory.getInstance(ReferralService.class).getPartnerId("refTest@mail.ru");
 
         Assert.assertEquals(expectedPartnerId, actualPartnerId);
     }
@@ -41,11 +42,11 @@ public class ReferralServiceTest {
     @Test
     public void testingGeneratePartnerId() {
         User user = new User(null, "Rama", "ndhyt@mail.ru", "1234n");
-        CreateUserService.getInstance().
+        InstanceFactory.getInstance(CreateUserService.class).
                 registrationNewUser(user, null);
-        ReferralService referralService = ReferralService.getInstance();
+        ReferralService referralService = InstanceFactory.getInstance(ReferralService.class);
         Integer partnerIdExpected = referralService.generatePartnerId(user.getEmail());
-        Optional<User> userExpected = UserRepository.getInstance().getUser("ndhyt@mail.ru");
+        Optional<User> userExpected = InstanceFactory.getInstance(UserRepository.class).getUser("ndhyt@mail.ru");
 
         if (userExpected.isPresent()) {
             Integer partnerIdActual = referralService.getPartnerId(userExpected.get().getEmail());
@@ -60,7 +61,7 @@ public class ReferralServiceTest {
         User userReferralOne = new User(null, "Tommi", "nitommi@mail.ru", "12887yu");
         User userReferralTwo = new User(null, "Bronx", "bromx@mail.ru", "buyty890");
 
-        UserRepository userRepository = UserRepository.getInstance();
+        UserRepository userRepository = InstanceFactory.getInstance(UserRepository.class);
         try {
             userReferrer = userRepository.createNewUser(userReferrer);
             userReferralOne = userRepository.createNewUser(userReferralOne);
@@ -70,7 +71,7 @@ public class ReferralServiceTest {
             
             throw new RuntimeException(e);
         }
-        ReferralService referralService = ReferralService.getInstance();
+        ReferralService referralService =InstanceFactory.getInstance(ReferralService.class);
         referralService.registrationAsReferral(userReferrer.getPartnerId(),userReferralOne.getEmail());
         referralService.registrationAsReferral(userReferrer.getPartnerId(),userReferralTwo.getEmail());
 

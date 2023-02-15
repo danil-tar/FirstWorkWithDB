@@ -3,22 +3,12 @@ package messenger.service;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import messenger.annotation.Singleton;
 
-import java.security.SecureRandom;
 import java.util.Properties;
-
+@Singleton
 public class EMailService {
-
-    private static EMailService instance = null;
-
     private EMailService() {
-    }
-
-    public static synchronized EMailService getInstance() {
-        if (instance == null) {
-            instance = new EMailService();
-        }
-        return instance;
     }
 
     private final String addressEmailFrom = "testjavasendwrite@mail.ru";
@@ -42,12 +32,8 @@ public class EMailService {
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
 
-//        props.put("mail.smtp.starttls.enable", false);
-//        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
         props.put("mail.smtp.ssl.enable", true);
         props.put("mail.smtp.ssl.trust", "*");
-
-//        props.put("mail.smtps.ssl.checkserveridentity", true);
 
         Session session = Session.getInstance(props, getMyAuthenticator());
 

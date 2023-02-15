@@ -1,3 +1,4 @@
+import messenger.menegment.InstanceFactory;
 import messenger.repository.ConnectionFactory;
 import messenger.repository.UserRepository;
 
@@ -13,7 +14,7 @@ public class InitDb {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
+        ConnectionFactory connectionFactory = InstanceFactory.getInstance(ConnectionFactory.class);
         ConnectionFactory.changeDbURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 
         Connection connection = connectionFactory.getConnection();
@@ -47,7 +48,7 @@ public class InitDb {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection =InstanceFactory.getInstance(ConnectionFactory.class).getConnection();
         Statement statement = null;
         try {
             statement = connection.createStatement();

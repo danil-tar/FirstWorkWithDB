@@ -1,24 +1,27 @@
 package messenger.service;
 
+import messenger.annotation.Autowired;
+import messenger.annotation.Singleton;
 import messenger.controller.AuthorizationController;
 import messenger.dto.User;
+import messenger.menegment.InstanceFactory;
 import messenger.repository.UserRepository;
 
-import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
+@Singleton(lazy = true)
 public class AuthorizationService {
-
-    private static AuthorizationService instance = null;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JWTService jwtService;
 
     private AuthorizationService() {
-    }
-
-    public static synchronized AuthorizationService getInstance() {
-        if (instance == null) {
-            instance = new AuthorizationService();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        return instance;
     }
 
     public AuthorizationController.AuthorizationResponse authorizationUser(String requestedName,
@@ -29,9 +32,6 @@ public class AuthorizationService {
         String nameInRepositoryUser;
         String passwordInRepositoryUser;
         String token = null;
-
-        UserRepository userRepository = UserRepository.getInstance();
-        JWTService jwtService = JWTService.getInstance();
 
         try {
             User repositoryUser = userRepository.getUser(requestedEmail).get();

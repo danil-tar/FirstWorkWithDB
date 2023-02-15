@@ -1,5 +1,7 @@
 package messenger.repository;
 
+import messenger.annotation.Autowired;
+import messenger.annotation.Singleton;
 import messenger.dto.User;
 
 import java.sql.Connection;
@@ -9,21 +11,13 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Optional;
 
+@Singleton
 public class ReferralRepository {
-    private static ReferralRepository instance = null;
-
-    private ReferralRepository() {
-    }
-
-    public static synchronized ReferralRepository getInstance() {
-        if (instance == null) {
-            instance = new ReferralRepository();
-        }
-        return instance;
-    }
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
     public Optional<User> getUserFromPartnerId(Integer partnerId) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
         Statement statement = connection.createStatement();
 
         String queryGet = String.format("SELECT * FROM users WHERE partner_id ='%d'", partnerId);
@@ -46,7 +40,7 @@ public class ReferralRepository {
 
     public Optional<User> getUserFromId(Integer id) throws SQLException {
 
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
 
         Statement statement = connection.createStatement();
 
@@ -69,7 +63,7 @@ public class ReferralRepository {
     }
 
     public void setReferralId(Integer referrerId, Integer referralId) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
         Statement statement = connection.createStatement();
 
         String querySetReferralId = String.format("INSERT INTO referrals (referrer_id, referral_id ) VALUES ('%d', '%d');", referrerId, referralId);
@@ -82,8 +76,7 @@ public class ReferralRepository {
 
         HashSet<String> referralEmailsHashSet = new HashSet<>();
 
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-
+        Connection connection = connectionFactory.getConnection();
         try {
             Statement statement = connection.createStatement();
 
@@ -93,7 +86,8 @@ public class ReferralRepository {
 
             while (resultSet.next()) {
                 int referralId = resultSet.getInt(7);
-                referralEmailsHashSet.add(ReferralRepository.getInstance().getUserFromId(referralId).get().getEmail());
+                referralEmailsHashSet.add(
+                        getUserFromId(referralId).get().getEmail());
             }
 
             connection.close();
@@ -108,7 +102,8 @@ public class ReferralRepository {
     }
 
     public void clear() {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
+
         try {
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM referrals;");

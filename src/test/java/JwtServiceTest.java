@@ -2,6 +2,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.JwtException;
 import messenger.dto.User;
+import messenger.menegment.InstanceFactory;
 import messenger.service.JWTService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import org.junit.Test;
 public class JwtServiceTest {
     @Test
     public void testCreateJwtToken() throws JsonProcessingException {
-        JWTService jwtService = JWTService.getInstance();
+        JWTService jwtService = InstanceFactory.getInstance(JWTService.class);
 
         User userExpected = new User(null, "testName", "333@mail.ru", null);
 

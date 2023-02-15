@@ -1,6 +1,7 @@
 import com.sun.mail.pop3.POP3Store;
 import com.sun.mail.util.MailSSLSocketFactory;
 import jakarta.mail.*;
+import messenger.menegment.InstanceFactory;
 import messenger.service.EMailService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class TestMailService {
 //    @Ignore
     @Test
     public void testingEMailSending() {
-        EMailService eMailService = EMailService.getInstance();
+        EMailService eMailService = InstanceFactory.getInstance(EMailService.class);
         eMailService.sendEMail(mailAddress, textForSubject, "test");
         TestMailService.receivingEmail();
 //        String host = "pop.mail.ru";//change accordingly
@@ -41,7 +42,7 @@ public class TestMailService {
         props.put("mail.imap.auth", "true");  // If you need to authenticate
         props.put("mail.imap.ssl.trust", "*");
 
-        EMailService eMailService = EMailService.getInstance();
+        EMailService eMailService = InstanceFactory.getInstance(EMailService.class);
         Session session = Session.getInstance(props, eMailService.getMyAuthenticator());
 
         boolean eMailIsReceived = false;

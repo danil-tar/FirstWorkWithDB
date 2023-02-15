@@ -1,28 +1,23 @@
 package messenger.service;
 
+import messenger.annotation.Autowired;
+import messenger.annotation.Singleton;
 import messenger.dto.User;
 import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
 import java.util.Optional;
-
+@Singleton
 public class DeleteUserService {
 
-    private static DeleteUserService instance = null;
+    @Autowired
+    private  UserRepository userRepository;
 
     private DeleteUserService() {
     }
 
-    public static synchronized DeleteUserService getInstance() {
-        if (instance == null) {
-            instance = new DeleteUserService();
-        }
-        return instance;
-    }
-
     public String deleteUser(String email) {
 
-        UserRepository userRepository = UserRepository.getInstance();
 
         Optional<User> user;
         user = userRepository.getUser(email);
@@ -39,7 +34,6 @@ public class DeleteUserService {
     }
 
     public void clear() {
-        UserRepository userRepository = UserRepository.getInstance();
         userRepository.clear();
     }
 }

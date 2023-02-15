@@ -7,6 +7,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import messenger.MessengerApplication;
 import messenger.controller.AuthorizationController;
 import messenger.dto.User;
+import messenger.menegment.InstanceFactory;
 import messenger.service.CreateUserService;
 import messenger.service.DeleteUserService;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class TestAuthorizationInService {
     @BeforeAll
     // @Test
     public static void createRowsToDataBaseForTest() {
-        DeleteUserService deleteUserService = DeleteUserService.getInstance();
+        DeleteUserService deleteUserService = InstanceFactory.getInstance(DeleteUserService.class);
         deleteUserService.clear();
 
 
@@ -29,7 +30,7 @@ public class TestAuthorizationInService {
                 new User(null, "andi", "154andi@mail.ru", "pofu775mn"),
                 new User(null, "Fan", "jhayt134@mail.ru", "iuf755f"));
 
-        CreateUserService createUserService = CreateUserService.getInstance();
+        CreateUserService createUserService = InstanceFactory.getInstance(CreateUserService.class);
         for (User user : users) {
             createUserService.registrationNewUser(user, null);
         }

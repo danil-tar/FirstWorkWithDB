@@ -1,28 +1,26 @@
 package messenger.repository;
 
+import messenger.annotation.Autowired;
+import messenger.annotation.Singleton;
 import messenger.dto.User;
 import messenger.service.ReferralService;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
+@Singleton(lazy = true)
 public class UserRepository {
-
-    private static UserRepository instance = null;
-
     private UserRepository() {
     }
 
-    public static synchronized UserRepository getInstance() {
-        if (instance == null) {
-            instance = new UserRepository();
-        }
-        return instance;
-    }
-
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
     public Optional<User> getUser(String email) {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
 
         Statement statement = null;
         User user = null;
@@ -52,7 +50,7 @@ public class UserRepository {
 
 
     public User createNewUser(User user) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
         Statement statement = connection.createStatement();
 
         String queryPOST = String.format("INSERT INTO users ( \"name\", email, \"password\") VALUES ('%s', '%s', '%s');",
@@ -60,10 +58,6 @@ public class UserRepository {
                 user.getEmail(),
                 user.getPassword());
         statement.execute(queryPOST);
-        Integer partnerId = ReferralService.getInstance().generatePartnerId(user.getEmail());
-
-        String querySetPartnerId = String.format("UPDATE users SET partner_id='%d' WHERE email='%s';", partnerId, user.getEmail());
-        statement.execute(querySetPartnerId);
 
         connection.close();
 
@@ -71,7 +65,7 @@ public class UserRepository {
     }
 
     public void deleteUser(User user) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
         Statement statement = connection.createStatement();
 
         String queryDELETE = String.format("DELETE FROM users WHERE id = '%d';", user.getId());
@@ -81,10 +75,28 @@ public class UserRepository {
     }
 
     public void clear() {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Connection connection = connectionFactory.getConnection();
         try {
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM users");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void updatePartnerId(String email, Integer newUserPartnerId) {
+        String querySetPartnerId = String.format("UPDATE users SET partner_id='%d' WHERE email='%s';", newUserPartnerId, email);
+
+        Connection connection = connectionFactory.getConnection();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(querySetPartnerId);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

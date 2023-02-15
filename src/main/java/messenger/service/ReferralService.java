@@ -1,31 +1,27 @@
 package messenger.service;
 
+import messenger.annotation.Autowired;
+import messenger.annotation.Singleton;
 import messenger.dto.User;
+import messenger.menegment.InstanceFactory;
 import messenger.repository.ReferralRepository;
 import messenger.repository.UserRepository;
 
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Optional;
-
+@Singleton
 public class ReferralService {
-
-    private static ReferralService instance;
-
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ReferralRepository referralRepository;
     private ReferralService() {
-    }
-
-    public static synchronized ReferralService getInstance() {
-        if (instance == null) {
-            instance = new ReferralService();
-        }
-        return instance;
     }
 
     private final Integer addToGeneratePartnerId = 1254;
 
     public Integer getPartnerId(String email) {
-        UserRepository userRepository = UserRepository.getInstance();
         Optional<User> user = userRepository.getUser(email);
         if (user.isPresent()) {
             Integer partnerId = user.get().getPartnerId();
@@ -38,10 +34,7 @@ public class ReferralService {
 
         HashSet<String> referralEmails = new HashSet<>();
 
-        UserRepository userRepository = UserRepository.getInstance();
         Optional<User> user = userRepository.getUser(email);
-
-        ReferralRepository referralRepository = ReferralRepository.getInstance();
 
         if (user.isPresent()) {
             referralEmails = referralRepository.getReferralEmails(user.get().getPartnerId());
@@ -51,7 +44,6 @@ public class ReferralService {
 
     public Integer generatePartnerId(String email) {
 
-        UserRepository userRepository = UserRepository.getInstance();
         Integer partner_Id = 0;
         Optional<User> user = userRepository.getUser(email);
         if (user.isPresent() && user.get().getPartnerId() == 0) {
@@ -67,9 +59,6 @@ public class ReferralService {
     }
 
     public void registrationAsReferral(Integer partnerId, String emailForSettingPartnerId) {
-
-        UserRepository userRepository = UserRepository.getInstance();
-        ReferralRepository referralRepository = ReferralRepository.getInstance();
         try {
             Optional<User> userReferrer = referralRepository.getUserFromPartnerId(partnerId);
             Optional<User> userReferral = userRepository.getUser(emailForSettingPartnerId);
