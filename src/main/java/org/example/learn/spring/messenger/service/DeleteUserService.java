@@ -1,25 +1,26 @@
-package messenger.service;
+package org.example.learn.spring.messenger.service;
 
-import messenger.dto.User;
-import messenger.repository.UserRepository;
+import org.example.learn.spring.messenger.dto.User;
+import org.example.learn.spring.messenger.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Optional;
-
+@Service
 public class DeleteUserService {
+
+    @Autowired
+    private  UserRepository userRepository;
+
+    private DeleteUserService() {
+    }
 
     public String deleteUser(String email) {
 
-        UserRepository userRepository = new UserRepository();
 
         Optional<User> user;
-        try {
-            user = userRepository.getUser(email);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Problem witch access DB";
-        }
+        user = userRepository.getUser(email);
         if (user.isPresent()) {
             try {
                 userRepository.deleteUser(user.get());
@@ -30,5 +31,9 @@ public class DeleteUserService {
             }
         }
         return "User witch email" + email + " not fund";
+    }
+
+    public void clear() {
+        userRepository.clear();
     }
 }

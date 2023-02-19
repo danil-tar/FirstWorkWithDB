@@ -1,13 +1,22 @@
-package messenger.service;
+package org.example.learn.spring.messenger.service;
 
-import messenger.controller.AuthorizationController;
-import messenger.dto.User;
-import messenger.repository.UserRepository;
+import org.example.learn.spring.messenger.controller.AuthorizationController;
+import org.example.learn.spring.messenger.dto.User;
+import org.example.learn.spring.messenger.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
+@Service
 public class AuthorizationService {
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JWTService jwtService;
+
+    private AuthorizationService() {
+    }
 
     public AuthorizationController.AuthorizationResponse authorizationUser(String requestedName,
                                                                            String requestedEmail,
@@ -17,9 +26,6 @@ public class AuthorizationService {
         String nameInRepositoryUser;
         String passwordInRepositoryUser;
         String token = null;
-
-        UserRepository userRepository = new UserRepository();
-        JWTService jwtService = new JWTService();
 
         try {
             User repositoryUser = userRepository.getUser(requestedEmail).get();
@@ -34,7 +40,7 @@ public class AuthorizationService {
                 message = "Wrong name or password";
             }
 
-        } catch (SQLException | NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             message = "User is not fund!!!";
             e.getStackTrace();
         }
