@@ -3,6 +3,7 @@ package org.example.learn.spring.messenger.service;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -12,11 +13,16 @@ public class EMailService {
     private EMailService() {
     }
 
-    private final String addressEmailFrom = "testjavasendwrite@mail.ru";
-    private final String userName = "testjavasendwrite@mail.ru";
-    private final String userPassword = "MNgUpt6iPqe7UaRKff4N";
-    private String mailServerHost = "smtp.mail.ru";
-    private String port = "465";
+    @Value("${addressEmailFrom}")
+    private String addressEmailFrom;
+    @Value("${userName}")
+    private String userName;
+    @Value("${userPassword}")
+    private String userPassword;
+    @Value("${mailServerHost}")
+    private String mailServerHost;
+    @Value("${port}")
+    private String port;
 
 
     public void sendEMail(String addressEmailTo, String textForSubject, String textForTExt) {

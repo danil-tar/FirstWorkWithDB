@@ -1,5 +1,6 @@
 package org.example.learn.spring.messenger.repository;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -8,9 +9,12 @@ import java.sql.SQLException;
 
 @Component
 public class ConnectionFactory {
-    private static String DB_URL = "jdbc:postgresql://127.0.0.1:5432/TestRegistration";
-    private static final String USER = "postgres";
-    private static final String PASS = "danil";
+    @Value("${DB_URL}")
+    private static String DB_URL;
+    @Value("${USER}")
+    private static String USER;
+    @Value("${PASS}")
+    private static String PASS;
 
     private ConnectionFactory() {
     }

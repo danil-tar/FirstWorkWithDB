@@ -2,23 +2,23 @@ package org.example.learn.spring.messenger.service;
 
 import io.jsonwebtoken.*;
 import org.example.learn.spring.messenger.dto.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 import java.util.LinkedHashMap;
+
 @Service
 public class JWTService {
+
     private JWTService() {
     }
 
     private long ttlMillis = 1000 * 60 * 60;
-    private final byte[] apiKeySecretBytes = ("123451234512345123451234512345123451" +
-            "234512345123451234512345123451234512345123451234512345123" +
-            "45123451234512345123451234512345123451234512345123451234512" +
-            "3451234512345123451234" +
-            "51234512345123451234512345123451234512345123451234512345123451234512345").getBytes();
+    @Value("${secretKey}")
+    private String secretKey;
 
     public void setTtlMillis(long ttlMillis) {
         this.ttlMillis = ttlMillis;
@@ -31,7 +31,7 @@ public class JWTService {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
 
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+        Key signingKey = new SecretKeySpec(secretKey.getBytes(), signatureAlgorithm.getJcaName());
 
 //        System.out.println(signingKey);
 
@@ -58,7 +58,7 @@ public class JWTService {
         LinkedHashMap<String, String> userFromToken = new LinkedHashMap<>();
 
         try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(apiKeySecretBytes).build().parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             userFromToken = body.get("user", LinkedHashMap.class);
         } catch (JwtException e) {
